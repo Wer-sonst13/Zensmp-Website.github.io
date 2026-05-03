@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CraftRealms SMP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:   #080809;
+  --surface: #0f1012;
+  --card:    #141519;
+  --line:    #1e2026;
+  --line2:   #2a2d36;
+  --muted:   #4a4e5a;
+  --dim:     #7a7f8e;
+  --light:   #b8bcc8;
+  --white:   #eef0f5;
+  --blue:    #2563EB;
+  --blue-hi: #3b82f6;
+  --blue-lo: #1d4ed8;
+  --blue-bg: rgba(37,99,235,.07);
+  --blue-glow: rgba(37,99,235,.18);
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--light);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── Subtle grid bg ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: .35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--blue); }
+
+/* ══════════════════════════════════
+   NAV
+══════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem;
+  height: 60px;
+  background: rgba(8,8,9,.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -.02em;
+  display: flex; align-items: center; gap: .5rem;
+}
+
+.nav-logo-dot {
+  width: 7px; height: 7px;
+  background: var(--blue);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--blue);
+}
+
+.nav-links {
+  display: flex; gap: 2.5rem; list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--dim);
+  text-decoration: none;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+
+.nav-links a:hover { color: var(--white); }
+
+.nav-ip-btn {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--blue-hi);
+  background: var(--blue-bg);
+  border: 1px solid rgba(37,99,235,.3);
+  padding: .38rem 1rem;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .02em;
+}
+
+.nav-ip-btn:hover {
+  background: rgba(37,99,235,.15);
+  border-color: var(--blue);
+  box-shadow: 0 0 20px var(--blue-glow);
+}
+
+/* ══════════════════════════════════
+   HERO
+══════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(37,99,235,.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--blue-hi);
+  border: 1px solid rgba(37,99,235,.3);
+  padding: .35rem .9rem;
+  margin-bottom: 2.5rem;
+  letter-spacing: .08em;
+  animation: fadeUp .6s ease both;
+}
+
+.pulse-dot {
+  width: 6px; height: 6px;
+  background: var(--blue-hi);
+  border-radius: 50%;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(59,130,246,.6); }
+  50%      { opacity:.7; box-shadow:0 0 0 5px transparent; }
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: var(--white);
+  letter-spacing: -.04em;
+  line-height: .95;
+  margin-bottom: 1.5rem;
+  animation: fadeUp .6s .1s ease both;
+}
+
+.hero-title .accent { color: var(--blue-hi); }
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--dim);
+  max-width: 480px;
+  font-weight: 300;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+  animation: fadeUp .6s .2s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp .6s .3s ease both;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: .82rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: .75rem 1.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: .5rem;
+  transition: all .2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--blue-hi);
+  box-shadow: 0 0 30px var(--blue-glow);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--light);
+  border: 1px solid var(--line2);
+}
+
+.btn-ghost:hover {
+  border-color: var(--dim);
+  background: var(--card);
+}
+
+.hero-stats {
+  display: flex; gap: 3rem; margin-top: 5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 2.5rem;
+  animation: fadeUp .6s .4s ease both;
+}
+
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--white);
+  letter-spacing: -.03em;
+}
+
+.hero-stat-label {
+  font-size: .72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-top: .1rem;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ══════════════════════════════════
+   SECTION STRUCTURE
+══════════════════════════════════ */
+.section-wrap {
+  position: relative; z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.section-header {
+  display: flex; align-items: baseline; gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  color: var(--blue-hi);
+  letter-spacing: .1em;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--white);
+  letter-spacing: -.03em;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+  position: relative; z-index: 1;
+}
+
+/* ══════════════════════════════════
+   STATUS
+══════════════════════════════════ */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.status-cell {
+  background: var(--card);
+  padding: 1.8rem 1.5rem;
+  display: flex; flex-direction: column; gap: .4rem;
+}
+
+.status-cell-label {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.status-cell-val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+
+.status-cell-val.online { color: #4ade80; }
+.status-cell-val.blue   { color: var(--blue-hi); }
+
+.status-indicator {
+  display: inline-flex; align-items: center; gap: .4rem;
+}
+
+.live-dot {
+  width: 7px; height: 7px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulseDot 2s infinite;
+}
+
+/* ══════════════════════════════════
+   RULES
+══════════════════════════════════ */
+.rules-list {
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.rule-row {
+  background: var(--card);
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  transition: background .2s;
+}
+
+.rule-row:hover { background: #16181e; }
+
+.rule-index {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--muted);
+  padding-top: .2rem;
+  letter-spacing: .05em;
+}
+
+.rule-body {}
+
+.rule-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--white);
+  letter-spacing: -.01em;
+  margin-bottom: .3rem;
+}
+
+.rule-desc {
+  font-size: .87rem;
+  color: var(--dim);
+  line-height: 1.65;
+}
+
+.rule-severity {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .2rem .6rem;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.sev-warn  { color: #f59e0b; border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.06); }
+.sev-ban   { color: #f87171; border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.06); }
+.sev-mute  { color: var(--blue-hi); border-color: rgba(59,130,246,.35); background: var(--blue-bg); }
+.sev-kick  { color: #a78bfa; border-color: rgba(167,139,250,.35); background: rgba(167,139,250,.06); }
+
+/* ══════════════════════════════════
+   PLAYERS
+══════════════════════════════════ */
+.player-controls {
+  display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--line2);
+  color: var(--light);
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  padding: .65rem 1rem;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.search-input:focus { border-color: var(--blue); }
+.search-input::placeholder { color: var(--muted); }
+
+.player-count-label {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.players-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+}
+
+.players-table th {
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: .8rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+}
+
+.players-table td {
+  padding: .85rem 1.2rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .87rem;
+  vertical-align: middle;
+}
+
+.players-table tbody tr {
+  background: var(--card);
+  transition: background .15s;
+}
+
+.players-table tbody tr:hover { background: #16181e; }
+.players-table tbody tr:last-child td { border-bottom: none; }
+
+.player-cell {
+  display: flex; align-items: center; gap: .75rem;
+}
+
+.player-avatar {
+  width: 32px; height: 32px;
+  image-rendering: pixelated;
+  border: 1px solid var(--line2);
+  flex-shrink: 0;
+}
+
+.player-name-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--white);
+  letter-spacing: -.01em;
+}
+
+.rank-pill {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: .18rem .55rem;
+  border: 1px solid;
+}
+
+.r-owner   { color: #f87171; border-color: rgba(248,113,113,.4); }
+.r-admin   { color: #fb923c; border-color: rgba(251,146,60,.4); }
+.r-mod     { color: #facc15; border-color: rgba(250,204,21,.4); }
+.r-vip     { color: #a78bfa; border-color: rgba(167,139,250,.4); }
+.r-default { color: var(--dim); border-color: var(--line2); }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-family: var(--font-mono);
+  font-size: .65rem;
+}
+
+.s-dot { width: 5px; height: 5px; border-radius: 50%; }
+.s-on  { background: #4ade80; }
+.s-off { background: var(--muted); }
+.s-on-text  { color: #4ade80; }
+.s-off-text { color: var(--muted); }
+
+/* ══════════════════════════════════
+   SHOP — RANKS
+══════════════════════════════════ */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 5rem;
+}
+
+.rank-card {
+  background: var(--card);
+  padding: 2rem 1.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  position: relative;
+  transition: background .2s;
+}
+
+.rank-card:hover { background: #16181e; }
+
+.rank-card.featured::before {
+  content: 'BELIEBT';
+  position: absolute; top: 0; right: 0;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  letter-spacing: .1em;
+  padding: .25rem .6rem;
+}
+
+.rank-icon { font-size: 1.5rem; }
+
+.rank-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -.02em;
+}
+
+.rank-price {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--white);
+}
+
+.rank-perks {
+  list-style: none;
+  display: flex; flex-direction: column; gap: .4rem;
+  flex: 1;
+}
+
+.rank-perks li {
+  font-size: .8rem;
+  color: var(--dim);
+  display: flex; align-items: flex-start; gap: .5rem;
+  line-height: 1.5;
+}
+
+.rank-perks li::before {
+  content: '—';
+  color: var(--line2);
+  flex-shrink: 0;
+  margin-top: .05rem;
+}
+
+.rank-buy-btn {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: .75rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .65rem;
+  border: 1px solid var(--line2);
+  background: transparent;
+  color: var(--light);
+  cursor: pointer;
+  transition: all .2s;
+  width: 100%;
+}
+
+.rank-buy-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue-hi);
+  background: var(--blue-bg);
+}
+
+.rank-buy-btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.rank-buy-btn.primary:hover {
+  background: var(--blue-hi);
+  box-shadow: 0 0 25px var(--blue-glow);
+}
+
+/* ══════════════════════════════════
+   SHOP — IGN MONEY
+══════════════════════════════════ */
+.ign-header {
+  display: flex; align-items: baseline; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ign-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+
+.ign-sub {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--muted);
+}
+
+.ign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.ign-card {
+  background: var(--card);
+  padding: 1.5rem;
+  display: flex; flex-direction: column; gap: .6rem;
+  transition: background .2s;
+}
+
+.ign-card:hover { background: #16181e; }
+
+.ign-amount {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--blue-hi);
+  letter-spacing: .05em;
+}
+
+.ign-coins {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+
+.ign-bonus {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: #4ade80;
+  letter-spacing: .04em;
+}
+
+.ign-price {
+  font-size: .82rem;
+  color: var(--dim);
+  margin-top: auto;
+  padding-top: .8rem;
+  border-top: 1px solid var(--line);
+}
+
+.ign-price strong {
+  font-family: var(--font-mono);
+  color: var(--light);
+}
+
+.ign-buy-btn {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: .72rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .55rem;
+  border: 1px solid var(--line2);
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.ign-buy-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue-hi);
+  background: var(--blue-bg);
+}
+
+/* ══════════════════════════════════
+   MODAL
+══════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--line2);
+  padding: 2.5rem;
+  width: 100%; max-width: 440px;
+  position: relative;
+  animation: modalIn .2s ease;
+}
+
+@keyframes modalIn { from { opacity:0; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
+
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 1.1rem;
+  line-height: 1; transition: color .2s;
+}
+
+.modal-close:hover { color: var(--white); }
+
+.modal-tag {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--blue-hi);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--white);
+  letter-spacing: -.03em;
+  margin-bottom: 2rem;
+}
+
+.modal-field { margin-bottom: 1.2rem; }
+
+.modal-label {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--line2);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: .9rem;
+  padding: .7rem 1rem;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.modal-input:focus { border-color: var(--blue); }
+.modal-input::placeholder { color: var(--muted); }
+
+.modal-summary {
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--blue);
+}
+
+.modal-summary p {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--dim);
+  line-height: 1.8;
+}
+
+.modal-summary strong { color: var(--white); }
+
+.modal-btn {
+  width: 100%;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: .82rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .85rem;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.modal-btn:hover {
+  background: var(--blue-hi);
+  box-shadow: 0 0 25px var(--blue-glow);
+}
+
+.modal-note {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 1rem;
+  letter-spacing: .03em;
+}
+
+/* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 2000;
+  background: var(--surface);
+  border: 1px solid var(--line2);
+  border-left: 3px solid var(--blue);
+  padding: .9rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--light);
+  display: none;
+  animation: slideUp .25s ease;
+  max-width: 300px;
+}
+
+@keyframes slideUp { from { transform:translateY(10px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--line);
+  padding: 3.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-left .footer-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--white);
+  letter-spacing: -.02em;
+  margin-bottom: .3rem;
+}
+
+.footer-left .footer-copy {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+
+.footer-links {
+  display: flex; gap: 2rem; list-style: none; flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+
+.footer-links a:hover { color: var(--blue-hi); }
+
+.footer-ip-copy {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--blue-hi);
+  background: var(--blue-bg);
+  border: 1px solid rgba(37,99,235,.25);
+  padding: .45rem 1.1rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.footer-ip-copy:hover { border-color: var(--blue); box-shadow: 0 0 15px var(--blue-glow); }
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 1.2rem; }
+  .nav-links { display: none; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+  .section-wrap { padding: 4rem 1.2rem; }
+  .rule-row { grid-template-columns: 40px 1fr; }
+  .rule-severity { display: none; }
+  footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .players-table th:nth-child(3),
+  .players-table td:nth-child(3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    CraftRealms
+  </div>
+  <ul class="nav-links">
+    <li><a href="#status">Status</a></li>
+    <li><a href="#rules">Regeln</a></li>
+    <li><a href="#players">Spieler</a></li>
+    <li><a href="#shop">Shop</a></li>
+  </ul>
+  <div class="nav-ip-btn" onclick="copyIP()">play.craftrealms.de ↗</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag"><span class="pulse-dot"></span> Season 4 — Jetzt Live</div>
+  <h1 class="hero-title">Craft<br><span class="accent">Realms</span></h1>
+  <p class="hero-sub">Ein Survival-Multiplayer-Server für Spieler, die Wert auf Community, faire Regeln und ein echtes Abenteuer legen.</p>
+  <div class="hero-actions">
+    <a href="#shop" class="btn btn-primary">Rang kaufen</a>
+    <a href="#rules" class="btn btn-ghost">Regeln lesen</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-val" id="hero-count">47</div>
+      <div class="hero-stat-label">Spieler online</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">1.21.4</div>
+      <div class="hero-stat-label">Minecraft</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">99.8%</div>
+      <div class="hero-stat-label">Uptime</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">S4</div>
+      <div class="hero-stat-label">Aktuelle Season</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STATUS -->
+<div class="section-wrap" id="status">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Server Status</h2>
+  </div>
+  <div class="status-grid">
+    <div class="status-cell">
+      <div class="status-cell-label">Status</div>
+      <div class="status-cell-val online">
+        <span class="status-indicator"><span class="live-dot"></span>Online</span>
+      </div>
+    </div>
+    <div class="status-cell">
+      <div class="status-cell-label">Spieler</div>
+      <div class="status-cell-val blue" id="status-count">47 / 100</div>
+    </div>
+    <div class="status-cell">
+      <div class="status-cell-label">IP-Adresse</div>
+      <div class="status-cell-val" style="font-family:var(--font-mono);font-size:1rem;cursor:pointer;color:var(--blue-hi)" onclick="copyIP()">play.craftrealms.de</div>
+    </div>
+    <div class="status-cell">
+      <div class="status-cell-label">Version</div>
+      <div class="status-cell-val">1.21.4</div>
+    </div>
+    <div class="status-cell">
+      <div class="status-cell-label">TPS</div>
+      <div class="status-cell-val online">20.0</div>
+    </div>
+    <div class="status-cell">
+      <div class="status-cell-label">Uptime</div>
+      <div class="status-cell-val">99.8%</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- RULES -->
+<div class="section-wrap" id="rules">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Serverregeln</h2>
+  </div>
+  <div class="rules-list">
+    <div class="rule-row">
+      <div class="rule-index">R-01</div>
+      <div class="rule-body">
+        <div class="rule-title">Respekt & Umgang</div>
+        <div class="rule-desc">Beleidigungen, Diskriminierung und toxisches Verhalten werden nicht toleriert. Behandle jeden Spieler respektvoll – im Chat, per Nachricht und ingame.</div>
+      </div>
+      <span class="rule-severity sev-mute">Mute / Bann</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-02</div>
+      <div class="rule-body">
+        <div class="rule-title">Kein Cheating oder Hacking</div>
+        <div class="rule-desc">Jede Form von Hacks, Cheats, X-Ray oder unerlaubten Modifikationen führt zum sofortigen permanenten Bann. Auch Bugusing zur eigenen Bereicherung ist verboten.</div>
+      </div>
+      <span class="rule-severity sev-ban">Perm-Bann</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-03</div>
+      <div class="rule-body">
+        <div class="rule-title">Kein Griefing oder Stehlen</div>
+        <div class="rule-desc">Das Zerstören, Stehlen oder Verändern fremder Bauten und Lager ist strikt verboten – unabhängig davon, ob ein Gebiet geclaimed ist oder nicht.</div>
+      </div>
+      <span class="rule-severity sev-ban">Bann</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-04</div>
+      <div class="rule-body">
+        <div class="rule-title">Kein Spam und keine Werbung</div>
+        <div class="rule-desc">Wiederholte gleiche Nachrichten, übermäßiges Caps-Schreiben sowie Werbung für andere Server ist im Chat nicht erlaubt.</div>
+      </div>
+      <span class="rule-severity sev-mute">Mute</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-05</div>
+      <div class="rule-body">
+        <div class="rule-title">PvP nur in vorgesehenen Zonen</div>
+        <div class="rule-desc">Spielerkämpfe sind ausschließlich in der PvP-Arena und im Nether erlaubt. Trapping, Kill-Stealing und ungewolltes PvP außerhalb dieser Bereiche sind untersagt.</div>
+      </div>
+      <span class="rule-severity sev-warn">Verwarnung</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-06</div>
+      <div class="rule-body">
+        <div class="rule-title">Serverstruktur respektieren</div>
+        <div class="rule-desc">1×1-Türme, riesige unfertige Bauten in Spawnähe und Landschaftsverschandelung sind nicht erwünscht. Bitte hinterlasse die Welt schöner, als du sie vorgefunden hast.</div>
+      </div>
+      <span class="rule-severity sev-kick">Kick</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-07</div>
+      <div class="rule-body">
+        <div class="rule-title">Admin-Entscheidungen sind bindend</div>
+        <div class="rule-desc">Entscheidungen des Teams werden akzeptiert. Einsprüche werden ruhig über das Discord-Ticket-System eingereicht – nicht im öffentlichen Chat.</div>
+      </div>
+      <span class="rule-severity sev-mute">Mute</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-08</div>
+      <div class="rule-body">
+        <div class="rule-title">Kein AFK-Farming</div>
+        <div class="rule-desc">Automatisiertes Spielen, Bot-Accounts und jede Form von AFK-Farming-Mechanismen zur Ressourcengewinnung sind verboten.</div>
+      </div>
+      <span class="rule-severity sev-ban">Bann</span>
+    </div>
+    <div class="rule-row">
+      <div class="rule-index">R-09</div>
+      <div class="rule-body">
+        <div class="rule-title">Kein inoffizieller Handel</div>
+        <div class="rule-desc">Der Verkauf von ingame Items oder Rängen gegen Echtgeld außerhalb des offiziellen Shops ist verboten und führt zum sofortigen permanenten Ausschluss.</div>
+      </div>
+      <span class="rule-severity sev-ban">Perm-Bann</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PLAYERS -->
+<div class="section-wrap" id="players">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Spielerliste</h2>
+  </div>
+  <div class="player-controls">
+    <input class="search-input" type="text" id="player-filter" placeholder="Spieler suchen…" oninput="filterPlayers()">
+    <span class="player-count-label" id="player-counter">16 Spieler</span>
+  </div>
+  <table class="players-table" id="players-table">
+    <thead>
+      <tr>
+        <th>Spieler</th>
+        <th>Rang</th>
+        <th>Beigetreten</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="players-body"></tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- SHOP -->
+<div class="section-wrap" id="shop">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Shop</h2>
+  </div>
+
+  <div class="shop-grid" id="shop-grid"></div>
+
+  <!-- IGN Money -->
+  <div class="ign-header">
+    <div class="ign-title">IGN-Geld</div>
+    <div class="ign-sub">Ingame-Währung sofort kaufen</div>
+  </div>
+  <div class="ign-grid" id="ign-grid"></div>
+</div>
+
+<hr class="divider">
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="footer-brand">CraftRealms SMP</div>
+    <div class="footer-copy">© 2025 CraftRealms — Nicht assoziiert mit Mojang / Microsoft</div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#status">Status</a></li>
+    <li><a href="#rules">Regeln</a></li>
+    <li><a href="#players">Spieler</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#">Discord</a></li>
+    <li><a href="#">Support</a></li>
+  </ul>
+  <div class="footer-ip-copy" onclick="copyIP()">play.craftrealms.de ↗</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tag">Bestellung</div>
+    <div class="modal-title" id="modal-title">Kaufen</div>
+    <div class="modal-field">
+      <label class="modal-label">Minecraft IGN</label>
+      <input class="modal-input" type="text" id="modal-ign" placeholder="Dein_Username" maxlength="16">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">E-Mail-Adresse</label>
+      <input class="modal-input" type="email" id="modal-email" placeholder="deine@email.de">
+    </div>
+    <div class="modal-summary" id="modal-summary"></div>
+    <button class="modal-btn" onclick="processPayment()">Jetzt kaufen</button>
+    <p class="modal-note">PayPal · Kreditkarte · Sofortüberweisung — Aktivierung in ~5 Min</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA ── */
+const players = [
+  { name:'Notchified',   rank:'owner',   online:true,  joined:'Jan 2024' },
+  { name:'CreeperSlayer',rank:'admin',   online:true,  joined:'Feb 2024' },
+  { name:'RedstoneWiz',  rank:'admin',   online:false, joined:'Mär 2024' },
+  { name:'DiamondQueen', rank:'mod',     online:false, joined:'Apr 2024' },
+  { name:'GoldHunter',   rank:'mod',     online:true,  joined:'Mai 2024' },
+  { name:'EnderKnight',  rank:'vip',     online:true,  joined:'Jun 2024' },
+  { name:'NetherWitch',  rank:'vip',     online:true,  joined:'Jul 2024' },
+  { name:'LavaRunner',   rank:'vip',     online:false, joined:'Aug 2024' },
+  { name:'EmeraldFox',   rank:'vip',     online:true,  joined:'Sep 2024' },
+  { name:'DragonRider',  rank:'vip',     online:true,  joined:'Okt 2024' },
+  { name:'ZombieBane',   rank:'default', online:false, joined:'Nov 2024' },
+  { name:'SkyBuilder',   rank:'default', online:true,  joined:'Dez 2024' },
+  { name:'StoneGuard',   rank:'default', online:false, joined:'Jan 2025' },
+  { name:'IceQueen',     rank:'default', online:true,  joined:'Feb 2025' },
+  { name:'FireBreath',   rank:'default', online:false, joined:'Mär 2025' },
+  { name:'CraftMaster',  rank:'default', online:true,  joined:'Apr 2025' },
+];
+
+const rankLabel = { owner:'Owner', admin:'Admin', mod:'Mod', vip:'VIP', default:'Spieler' };
+const rankOrder = { owner:0, admin:1, mod:2, vip:3, default:4 };
+players.sort((a,b)=> rankOrder[a.rank]-rankOrder[b.rank] || (b.online - a.online));
+
+function renderPlayers(list) {
+  const body = document.getElementById('players-body');
+  document.getElementById('player-counter').textContent = list.length + ' Spieler';
+  body.innerHTML = list.map(p => `
+    <tr>
+      <td>
+        <div class="player-cell">
+          <img class="player-avatar" src="https://mc-heads.net/avatar/${encodeURIComponent(p.name)}/32" alt="${p.name}"
+               onerror="this.style.background='#1e2026';this.style.border='1px solid #2a2d36'">
+          <span class="player-name-text">${p.name}</span>
+        </div>
+      </td>
+      <td><span class="rank-pill r-${p.rank}">${rankLabel[p.rank]}</span></td>
+      <td style="font-family:var(--font-mono);font-size:.72rem;color:var(--muted)">${p.joined}</td>
+      <td>
+        <span class="status-badge">
+          <span class="s-dot ${p.online?'s-on':'s-off'}"></span>
+          <span class="${p.online?'s-on-text':'s-off-text'}">${p.online?'Online':'Offline'}</span>
+        </span>
+      </td>
+    </tr>`).join('');
+}
+
+renderPlayers(players);
+
+function filterPlayers() {
+  const q = document.getElementById('player-filter').value.toLowerCase();
+  renderPlayers(players.filter(p => p.name.toLowerCase().includes(q)));
+}
+
+/* ── RANKS ── */
+const ranks = [
+  { name:'Stone',     icon:'◈', color:'var(--dim)',     price:'4,99 €',  featured:false,
+    perks:['Farbiger Name im Chat','5.000 Start-IGN','1 zusätzlicher Home','Stone-Rang-Prefix'] },
+  { name:'Iron',      icon:'◈', color:'var(--light)',   price:'9,99 €',  featured:false,
+    perks:['Alle Stone-Vorteile','15.000 Start-IGN','3 zusätzliche Homes','Priority-Login'] },
+  { name:'Gold',      icon:'◈', color:'#facc15',        price:'19,99 €', featured:true,
+    perks:['Alle Iron-Vorteile','40.000 Start-IGN','5 Home-Punkte','Farbiger Chat','Lobby-Fly'] },
+  { name:'Diamond',   icon:'◈', color:'var(--blue-hi)', price:'34,99 €', featured:false,
+    perks:['Alle Gold-Vorteile','100.000 Start-IGN','Unbegrenzte Homes','Fly in Hauptwelt','Custom Join-Msg'] },
+  { name:'Netherite', icon:'◈', color:'#a78bfa',        price:'59,99 €', featured:false,
+    perks:['Alle Diamond-Vorteile','500.000 Start-IGN','Custom Präfix','Monatlicher Bonus','Admin-Log-Zugang'] },
+];
+
+document.getElementById('shop-grid').innerHTML = ranks.map(r => `
+  <div class="rank-card ${r.featured?'featured':''}">
+    <div class="rank-icon" style="color:${r.color}">${r.icon}</div>
+    <div class="rank-name" style="color:${r.color}">${r.name}</div>
+    <div class="rank-price">${r.price}</div>
+    <ul class="rank-perks">${r.perks.map(p=>`<li>${p}</li>`).join('')}</ul>
+    <button class="rank-buy-btn ${r.featured?'primary':''}" onclick="openModal('${r.name} Rang','${r.price}','<strong>${r.name}</strong> Rang')">
+      Kaufen
+    </button>
+  </div>`).join('');
+
+/* ── IGN MONEY ── */
+const ignPacks = [
+  { coins:'10.000',  price:'1,99 €',  bonus:'' },
+  { coins:'30.000',  price:'4,99 €',  bonus:'+5.000 Gratis' },
+  { coins:'75.000',  price:'9,99 €',  bonus:'+15.000 Gratis' },
+  { coins:'200.000', price:'19,99 €', bonus:'+50.000 Gratis' },
+  { coins:'600.000', price:'49,99 €', bonus:'+200.000 Gratis' },
+];
+
+document.getElementById('ign-grid').innerHTML = ignPacks.map(p => `
+  <div class="ign-card">
+    <div class="ign-amount">IGN-Geld</div>
+    <div class="ign-coins">${p.coins}</div>
+    ${p.bonus ? `<div class="ign-bonus">${p.bonus}</div>` : ''}
+    <div class="ign-price">Preis: <strong>${p.price}</strong></div>
+    <button class="ign-buy-btn" onclick="openModal('${p.coins} IGN-Geld','${p.price}','<strong>${p.coins} IGN-Geld</strong>${p.bonus?' + '+p.bonus:''}')">
+      Kaufen
+    </button>
+  </div>`).join('');
+
+/* ── MODAL ── */
+let _cur = {};
+function openModal(name, price, summary) {
+  _cur = { name, price, summary };
+  document.getElementById('modal-title').textContent = name + ' kaufen';
+  document.getElementById('modal-summary').innerHTML = `
+    <p>Artikel: ${summary}<br>
+    Preis: <strong>${price}</strong><br>
+    Aktivierung innerhalb von <strong>5 Minuten</strong> nach Zahlung.</p>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+function processPayment() {
+  const ign = document.getElementById('modal-ign').value.trim();
+  const email = document.getElementById('modal-email').value.trim();
+  if (ign.length < 3) { showToast('Bitte gib deinen Minecraft-IGN ein.', false); return; }
+  if (!email.includes('@')) { showToast('Bitte gib eine gültige E-Mail-Adresse ein.', false); return; }
+  closeModal();
+  showToast(`Bestellung für ${ign} eingegangen. Prüfe deine E-Mail.`, true);
+}
+
+/* ── TOAST ── */
+function showToast(msg, success = true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = success ? 'var(--blue)' : '#f87171';
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.style.display = 'none', 4000);
+}
+
+/* ── COPY IP ── */
+function copyIP() {
+  navigator.clipboard.writeText('play.craftrealms.de')
+    .then(() => showToast('IP-Adresse kopiert: play.craftrealms.de'))
+    .catch(() => showToast('play.craftrealms.de'));
+}
+
+/* ── LIVE PLAYER COUNT ── */
+let count = 47;
+setInterval(() => {
+  count = Math.max(20, Math.min(98, count + (Math.random() > .5 ? 1 : -1)));
+  document.getElementById('hero-count').textContent = count;
+  document.getElementById('status-count').textContent = count + ' / 100';
+}, 6000);
+</script>
+</body>
+</html>
